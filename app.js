@@ -1,4 +1,6 @@
+
 const express = require('express')
+const methodOverride = require('method-override')
 const app = express()
 var exphbs = require('express-handlebars');
 
@@ -10,6 +12,7 @@ const bodyParser = require('body-parser')
 
 // The following line must appear AFTER const app = express() and before your routes!
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(methodOverride('_method'))
 
 const Review = mongoose.model('Review', {
   title: String,
@@ -34,6 +37,10 @@ app.listen(3000, () => {
 //   { title: "Great Review" },
 //   { title: "Next Review" }
 // ]
+// NEW
+app.get('/reviews/new', (req, res) => {
+  res.render('reviews-new', {});
+})
 
 // SHOW
 app.get('/reviews/:id', (req, res) => {
@@ -44,10 +51,7 @@ app.get('/reviews/:id', (req, res) => {
   })
 })
 
-app.get('/reviews/new', (req, res) => {
-  res.render('reviews-new', {});
-})
-
+//root
 app.get('/', (req, res) => {
   Review.find()
     .then(reviews => {
@@ -66,4 +70,22 @@ app.post('/reviews', (req, res) => {
   }).catch((err) => {
     console.log(err.message)
   })
+})
+
+// EDIT
+app.get('/reviews/:id/edit', function (req, res) {
+  Review.findById(req.params.id, function(err, review) {
+    res.render('reviews-edit', {review: review});
+  })
+})
+
+// UPDATE
+app.put('/reviews/:id', (req, res) => {
+  Review.findByIdAndUpdate(req.params.id, req.body)
+    .then(review => {
+      res.redirect(`/reviews/${review._id}`)
+    })
+    .catch(err => {
+      console.log(err.message)
+    })
 })
