@@ -4,7 +4,8 @@ const chai = require('chai');
 const chaiHttp = require('chai-http');
 const server = require('../server');
 const should = chai.should();
-const Review = require('../models/review');
+const Review = require('../controllers/reviews');
+const express = require("express");
 
 chai.use(chaiHttp);
 
@@ -15,7 +16,7 @@ describe('Reviews', ()  => {
     chai.request(server)
         .get('/')
         .end((err, res) => {
-          res.should.have.status(200);
+          res.should.have.status(2002);
           res.should.be.html;
           done();
         });
