@@ -81,4 +81,14 @@ module.exports = function(app) {
             console.log(err.message);
         })
     })
+
+    //Delete comments
+    app.delete('/reviews/comments/:id', function (req, res) {
+        console.log("DELETE comment");
+        Comment.findOneAndDelete(req.params.id).then((comment) => {
+            res.redirect(`/reviews/${comment.reviewId}`);
+        }).catch((err) => {
+            console.log(err.message);
+        })
+    })
 }
