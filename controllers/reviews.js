@@ -1,4 +1,4 @@
-const Review = require('../models/review')
+const Review = require('../models/reviews')
 const Comment = require('../models/comments')
 
 module.exports = function(app) {
@@ -14,16 +14,18 @@ module.exports = function(app) {
     //     })
     // })
 
-    // NEW
+    // NEW  XX
     app.get('/movies/:movieId/reviews/new', (req, res) => {
         res.render('reviews-new', { movieId: req.params.movieId });
     })
 
-    // CREATE
-    app.post('/reviews', (req, res) => {
+    // CREATE X
+    app.post('/movies/:movieId/reviews', (req, res) => {
         Review.create(req.body).then((review) => {
-            console.log(review)
-            res.redirect(`/reviews/${review._id}`) // Redirect to reviews/:id
+            console.log("hello")
+            console.log(req.body)
+            console.log(review);
+            res.redirect(`/movies/${review.movieId}`);
         }).catch((err) => {
             console.log(err.message)
         })
@@ -38,8 +40,8 @@ module.exports = function(app) {
     //     })
     // })
 
-    // SHOW
-    app.get('/reviews/:id', (req, res) => {
+    // SHOW  XX
+    app.get('/movies/:movieId/reviews/:id', (req, res) => {
         // find review
         Review.findById(req.params.id).then(review => {
             // fetch its comments
@@ -53,8 +55,8 @@ module.exports = function(app) {
         });
     });
 
-    // EDIT
-    app.get('/reviews/:id/edit', function (req, res) {
+    // EDIT  XX
+    app.get('/movies/:movieId/reviews/:id/edit', function (req, res) {
         Review.findById(req.params.id, function(err, review) {
             res.render('reviews-edit', {review: review});
         })
@@ -62,31 +64,31 @@ module.exports = function(app) {
 
 
     // UPDATE
-    app.put('/reviews/:id', (req, res) => {
+    app.put('/movies/:movieId/reviews/:id', (req, res) => {
         Review.findByIdAndUpdate(req.params.id, req.body)
-        .then(review => {
-            res.redirect(`/reviews/${review._id}`)
-        })
-        .catch(err => {
-            console.log(err.message)
-        })
+            .then(review => {
+                res.redirect(`/movies/${review.movieId}`)
+            })
+            .catch(err => {
+                console.log(err.message)
+            })
     })
 
     // DELETE
-    app.delete('/reviews/:id', function (req, res) {
-        console.log("DELETE review")
-        Review.findByIdAndRemove(req.params.id).then((review) => {
-            res.redirect('/');
-        }).catch((err) => {
-            console.log(err.message);
-        })
-    })
+    // app.delete('/movies/:movieId/reviews/:id', function (req, res) {
+    //     console.log("DELETE review")
+    //     Review.findByIdAndRemove(req.params.id).then((review) => {
+    //         res.redirect('/');
+    //     }).catch((err) => {
+    //         console.log(err.message);
+    //     })
+    // })
 
     //Delete comments
-    app.delete('/reviews/comments/:id', function (req, res) {
-        console.log("DELETE comment");
-        Comment.findOneAndDelete(req.params.id).then((comment) => {
-            res.redirect(`/reviews/${comment.reviewId}`);
+    app.delete('/movies/:movieId/reviews/:id', function(req, res) {
+        console.log("DELETE comment")
+        Review.findByIdAndRemove(req.params.id).then((review) => {
+            res.redirect(`/movies/${review.movieId}`);
         }).catch((err) => {
             console.log(err.message);
         })

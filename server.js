@@ -9,6 +9,7 @@ const movies = require('./controllers/movies.js')
 const reviews = require('./controllers/reviews.js');
 const comments = require('./controllers/comments.js');
 
+app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(methodOverride('_method'))
 app.engine('handlebars', exphbs({defaultLayout: 'main'}));
